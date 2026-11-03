@@ -1,0 +1,452 @@
+{
+  "as_of": "30 Oct 2026",
+  "aum_sgd": 500000000,
+  "macro": {
+    "fed": {
+      "text": "Fed raised the target range 25bp to 3.75-4.00% on 16 Sep 2026 (12-0), its first hike since Jul 2023; Sep projections imply one more hike in 2026. Unchanged on 28 Oct 2026 (10-2)",
+      "source": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+      "source_oct": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm",
+      "as_of": "28 Oct 2026"
+    },
+    "mas": {
+      "text": "MAS raised the S$NEER slope slightly (14 Apr 2026) and very slightly (27 Jul 2026), then left slope, width and centre unchanged on 14 Oct 2026. Slope of ~1.25% p.a. is a market estimate (UOB)",
+      "source": "https://www.mas.gov.sg/monetary-policy/past-monetary-policy-decisions",
+      "as_of": "14 Oct 2026"
+    },
+    "ust10y": {
+      "text": "UST 10Y closed 4.94% on 30 Oct 2026 (5.29% end-Sep)",
+      "source": "https://fred.stlouisfed.org/series/DGS10",
+      "as_of": "30 Oct 2026"
+    },
+    "sgd_credit": {
+      "text": "OCBC Monthly Credit View: weakness concentrated in lower-quality HY; Asia USD IG spreads +1bp m/m to 56bp; SGD supply S$2.3bn in Sep (Aug S$5.6bn)",
+      "source": "https://www.ocbc.com/iwov-resources/sg/ocbc/gbc/pdf/Credit%20Research/Monthly%20Reports/2026/OCBC%20Asia%20Credit%20Monthly%20Credit%20View%20-%20Public%20(October%202026).pdf",
+      "as_of": "6 Oct 2026 (data to 30 Sep)"
+    }
+  },
+  "levels": {
+    "curve": {
+      "entry_bp": 24.00000000000002,
+      "target_bp": 44.00000000000002,
+      "stop_bp": 14.000000000000021,
+      "dv01_5y": 42124.87055329365,
+      "dv01_20_30y": -42654.39916148342
+    },
+    "duration": {
+      "entry_pct": 2.24,
+      "target_pct": 2.3400000000000003,
+      "stop_ust_pct": 4.5
+    },
+    "credit": {
+      "entry_avg_spread_bp": 69.18181818181819,
+      "stop_widening_bp": 25,
+      "spread_carry_6m_bp": 11.415000000000001
+    }
+  },
+  "spread_sensitivity": [
+    {
+      "label": "Prior assumption",
+      "hdb_bp": 18,
+      "sb10_bp": 25,
+      "pickup_bp": 21.665901783267973,
+      "base_bp": 31.312718622102828,
+      "stress_bp": -104.89963456112172
+    },
+    {
+      "label": "Calibrated (used)",
+      "hdb_bp": 40,
+      "sb10_bp": 47,
+      "pickup_bp": 23.859063252330557,
+      "base_bp": 32.439866532911644,
+      "stress_bp": -103.88821958200451
+    },
+    {
+      "label": "Top of Sep-2026 range",
+      "hdb_bp": 69,
+      "sb10_bp": 76,
+      "pickup_bp": 26.750304208204707,
+      "base_bp": 33.92289272617679,
+      "stress_bp": -102.55100744801132
+    }
+  ],
+  "hdb_comparable": {
+    "yield_pct": 2.586,
+    "implied_spread_bp": [
+      35,
+      69
+    ]
+  },
+  "breakeven_6m_bp": 6.64741511521073,
+  "oct_move": {
+    "sgs10_bp": -23.0,
+    "ust10_bp": -34.999999999999964,
+    "beta": 0.6571428571428578,
+    "sgs10_prev": 2.47,
+    "ust10_prev": 5.29
+  },
+  "front_gap_bp": [
+    184.0,
+    209.0
+  ],
+  "curve": {
+    "yields": {
+      "0.5": 1.91,
+      "1": 1.9,
+      "2": 1.87,
+      "5": 2.03,
+      "10": 2.24,
+      "15": 2.29,
+      "20": 2.25,
+      "30": 2.27,
+      "50": 2.49
+    },
+    "s2s10": 37.000000000000014,
+    "s10s30": 2.9999999999999805,
+    "s5s30": 24.00000000000002,
+    "s6m2y": -3.9999999999999813,
+    "sgs_ust_10y": -270.0,
+    "ust10y": 4.94
+  },
+  "port": {
+    "duration": 5.527689729924898,
+    "ytm_pct": 2.255551762044803,
+    "convexity": 58.81103563782618,
+    "spread_duration": 1.7946121040143737,
+    "dv01_sgd": 276384.4864962449,
+    "credit_weight": 0.33,
+    "avg_spread_bp": 22.830000000000002
+  },
+  "bench": {
+    "duration": 5.876177277552733,
+    "ytm_pct": 2.0169611295214973,
+    "convexity": 76.58564559699846,
+    "spread_duration": 0.0,
+    "dv01_sgd": 293808.8638776367,
+    "credit_weight": 0.0,
+    "avg_spread_bp": 0.0
+  },
+  "active": {
+    "duration": -0.34848754762783507,
+    "ytm_pct": 0.2385906325233056,
+    "convexity": -17.77460995917228,
+    "spread_duration": 1.7946121040143737,
+    "dv01_sgd": -17424.377381391765,
+    "credit_weight": 0.33,
+    "avg_spread_bp": 22.830000000000002
+  },
+  "krd": {
+    "keys": [
+      2,
+      5,
+      10,
+      15,
+      20,
+      30
+    ],
+    "port": [
+      0.7559680033360638,
+      1.8218602525481395,
+      1.081118845515237,
+      0.7631051312097658,
+      0.5622656163961487,
+      0.5433704219365846
+    ],
+    "bench": [
+      0.9793628795936938,
+      0.9793628414822666,
+      0.9793627354668873,
+      0.9793625476485914,
+      0.979362298942102,
+      0.9793617226202996
+    ],
+    "active": [
+      -0.22339487625763,
+      0.842497411065873,
+      0.10175611004834961,
+      -0.21625741643882568,
+      -0.41709668254595333,
+      -0.43599130068371506
+    ],
+    "active_dv01_sgd": [
+      -11169.7438128815,
+      42124.87055329365,
+      5087.805502417481,
+      -10812.870821941284,
+      -20854.83412729767,
+      -21799.565034185754
+    ]
+  },
+  "sector_sd": {
+    "Statutory board": 0.5972534940538023,
+    "Bank senior": 0.4662767952440378,
+    "Corporate/REIT": 0.7310818147165336
+  },
+  "high_grade_share": 0.6060606060606061,
+  "te": {
+    "te_bp": 76.80443710987703,
+    "te_6m_bp": 54.308938305609765,
+    "rates_only_bp": 51.66086561777261,
+    "spread_only_bp": 51.745909515173516,
+    "idio_bp": 18.101071714176758,
+    "uncorrelated_bp": 73.11965664532407,
+    "cross_term_bp2": 552.4373718349716
+  },
+  "holdings": [
+    {
+      "name": "SGS 2Y benchmark",
+      "sector": "SGS",
+      "rating": "AAA",
+      "coupon_pct": 1.87,
+      "maturity": 2.0,
+      "spread_bp": 0.0,
+      "ytm_pct": 1.870000000000016,
+      "price": 99.99999999999997,
+      "duration": 1.9537625407693329,
+      "w_port": 0.36,
+      "w_bench": 0.501270169304443,
+      "note": "par bond at MAS benchmark yield, 30 Oct 2026"
+    },
+    {
+      "name": "SGS 5Y benchmark",
+      "sector": "SGS",
+      "rating": "AAA",
+      "coupon_pct": 2.03,
+      "maturity": 5.0,
+      "spread_bp": 0.0,
+      "ytm_pct": 2.0299999999999985,
+      "price": 100.00000000000007,
+      "duration": 4.740982328450368,
+      "w_port": 0.13,
+      "w_bench": 0.20657383043067268,
+      "note": "par bond at MAS benchmark yield, 30 Oct 2026"
+    },
+    {
+      "name": "SGS 10Y benchmark",
+      "sector": "SGS",
+      "rating": "AAA",
+      "coupon_pct": 2.24,
+      "maturity": 10.0,
+      "spread_bp": 0.0,
+      "ytm_pct": 2.2399999999999975,
+      "price": 100.00000000000009,
+      "duration": 8.974323633798768,
+      "w_port": 0.06,
+      "w_bench": 0.10912943632918269,
+      "note": "par bond at MAS benchmark yield, 30 Oct 2026"
+    },
+    {
+      "name": "SGS 15Y benchmark",
+      "sector": "SGS",
+      "rating": "AAA",
+      "coupon_pct": 2.29,
+      "maturity": 15.0,
+      "spread_bp": 0.0,
+      "ytm_pct": 2.2900000000000142,
+      "price": 100.00000000000003,
+      "duration": 12.718423164251641,
+      "w_port": 0.06,
+      "w_bench": 0.07700348281734094,
+      "note": "par bond at MAS benchmark yield, 30 Oct 2026"
+    },
+    {
+      "name": "SGS 20Y benchmark",
+      "sector": "SGS",
+      "rating": "AAA",
+      "coupon_pct": 2.25,
+      "maturity": 20.0,
+      "spread_bp": 0.0,
+      "ytm_pct": 2.2499999999999742,
+      "price": 100.00000000000026,
+      "duration": 16.06474142158443,
+      "w_port": 0.035,
+      "w_bench": 0.060963500992070735,
+      "note": "par bond at MAS benchmark yield, 30 Oct 2026"
+    },
+    {
+      "name": "SGS 30Y benchmark",
+      "sector": "SGS",
+      "rating": "AAA",
+      "coupon_pct": 2.27,
+      "maturity": 30.0,
+      "spread_bp": 0.0,
+      "ytm_pct": 2.269999999999972,
+      "price": 100.00000000000037,
+      "duration": 21.734842553952582,
+      "w_port": 0.025,
+      "w_bench": 0.04505958012628992,
+      "note": "par bond at MAS benchmark yield, 30 Oct 2026"
+    },
+    {
+      "name": "HDB 3.46% 21-May-2031",
+      "sector": "Statutory board",
+      "rating": "AAA",
+      "coupon_pct": 3.46,
+      "maturity": 4.56,
+      "spread_bp": 40.0,
+      "ytm_pct": 2.4043199527245873,
+      "price": 104.53256924924226,
+      "duration": 4.161078168651847,
+      "w_port": 0.06,
+      "w_bench": 0.0,
+      "note": "coupon/maturity per HDB pricing release (21 May 2024); spread ILLUSTRATIVE, calibrated to HDB 4Y Sep-2026 print"
+    },
+    {
+      "name": "Statutory board AAA 10Y",
+      "sector": "Statutory board",
+      "rating": "AAA",
+      "coupon_pct": 2.7125,
+      "maturity": 10.0,
+      "spread_bp": 47.0,
+      "ytm_pct": 2.7064745166190507,
+      "price": 100.05248081405867,
+      "duration": 8.763957157503643,
+      "w_port": 0.04,
+      "w_bench": 0.0,
+      "note": "ILLUSTRATIVE instrument; spread calibrated to HDB 4Y Sep-2026 print +7bp"
+    },
+    {
+      "name": "SG bank senior AA- 5Y",
+      "sector": "Bank senior",
+      "rating": "AA-",
+      "coupon_pct": 2.5749999999999997,
+      "maturity": 5.0,
+      "spread_bp": 55.00000000000001,
+      "ytm_pct": 2.578898519312278,
+      "price": 99.98182139440479,
+      "duration": 4.6721325748978355,
+      "w_port": 0.1,
+      "w_bench": 0.0,
+      "note": "ILLUSTRATIVE instrument and spread"
+    },
+    {
+      "name": "SG GLC corporate A 7Y",
+      "sector": "Corporate/REIT",
+      "rating": "A",
+      "coupon_pct": 2.9625,
+      "maturity": 7.0,
+      "spread_bp": 85.0,
+      "ytm_pct": 2.960864036799715,
+      "price": 100.01027462698693,
+      "duration": 6.300852497843031,
+      "w_port": 0.08,
+      "w_bench": 0.0,
+      "note": "ILLUSTRATIVE instrument and spread"
+    },
+    {
+      "name": "S-REIT BBB+ 5Y",
+      "sector": "Corporate/REIT",
+      "rating": "BBB+",
+      "coupon_pct": 3.2750000000000004,
+      "maturity": 5.0,
+      "spread_bp": 125.0,
+      "ytm_pct": 3.2774921868271134,
+      "price": 99.98859231076472,
+      "duration": 4.586025146512271,
+      "w_port": 0.05,
+      "w_bench": 0.0,
+      "note": "ILLUSTRATIVE instrument and spread"
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "Bull",
+      "narrative": "Fed pauses after one hike; UST 10Y back to ~4.4%; SGS bull-flattens",
+      "d2y": -30,
+      "d10y": -45,
+      "d30y": -45,
+      "spreads": {
+        "Statutory board": -3,
+        "Bank senior": -10,
+        "Corporate/REIT": -15
+      },
+      "port_pct": 3.467439087278447,
+      "bench_pct": 3.3491846782917953,
+      "active_bp": {
+        "carry": 11.929531626165296,
+        "roll": 2.370402622732909,
+        "duration": -14.407283216121662,
+        "curve": -3.644975432582685,
+        "spread": 16.071250320490034,
+        "residual": -0.49348502201866085,
+        "total": 11.825440898665176
+      }
+    },
+    {
+      "name": "Base",
+      "narrative": "Central view: MAS anchors front end, global term premium lifts SGS long end",
+      "d2y": -5,
+      "d10y": 10,
+      "d30y": 20,
+      "spreads": {
+        "Statutory board": 0,
+        "Bank senior": 0,
+        "Corporate/REIT": 0
+      },
+      "port_pct": 0.8149704903791777,
+      "bench_pct": 0.49057182505006125,
+      "active_bp": {
+        "carry": 11.929531626165296,
+        "roll": 2.370402622732909,
+        "duration": 3.3424897061402543,
+        "curve": 14.576750500561804,
+        "spread": 0.0,
+        "residual": 0.2206920773114089,
+        "total": 32.439866532911644
+      }
+    },
+    {
+      "name": "Bear",
+      "narrative": "Two more Fed hikes; UST 10Y ~5.5%; SGS bear-steepens",
+      "d2y": 25,
+      "d10y": 55,
+      "d30y": 70,
+      "spreads": {
+        "Statutory board": 5,
+        "Bank senior": 15,
+        "Corporate/REIT": 25
+      },
+      "port_pct": -1.4652018717278459,
+      "bench_pct": -1.6997347206994067,
+      "active_bp": {
+        "carry": 11.929531626165296,
+        "roll": 2.370402622732909,
+        "duration": 18.153176852313372,
+        "curve": 20.644152609119267,
+        "spread": -26.080661765438364,
+        "residual": -3.563317047736328,
+        "total": 23.45328489715609
+      }
+    },
+    {
+      "name": "Credit stress",
+      "narrative": "Risk-off: flight to SGS quality, Asian credit reprices",
+      "d2y": -25,
+      "d10y": -30,
+      "d30y": -25,
+      "spreads": {
+        "Statutory board": 15,
+        "Bank senior": 60,
+        "Corporate/REIT": 120
+      },
+      "port_pct": 1.4408367158434117,
+      "bench_pct": 2.479718911663457,
+      "active_bp": {
+        "carry": 11.929531626165296,
+        "roll": 2.370402622732909,
+        "duration": -9.220661258317886,
+        "curve": 4.364230744266965,
+        "spread": -115.10554664555487,
+        "residual": 1.773823328703096,
+        "total": -103.88821958200451
+      }
+    }
+  ],
+  "bench_weights": {
+    "SGS 2Y benchmark": 0.501270169304443,
+    "SGS 5Y benchmark": 0.20657383043067268,
+    "SGS 10Y benchmark": 0.10912943632918269,
+    "SGS 15Y benchmark": 0.07700348281734094,
+    "SGS 20Y benchmark": 0.060963500992070735,
+    "SGS 30Y benchmark": 0.04505958012628992
+  }
+}

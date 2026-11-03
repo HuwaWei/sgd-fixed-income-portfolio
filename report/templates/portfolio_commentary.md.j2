@@ -1,0 +1,53 @@
+{%- set A = r.active -%}{%- set P = r.port -%}{%- set B = r.bench -%}{%- set k = r.krd -%}{%- set cv = r.curve -%}
+# SGD Fixed Income Model Portfolio vs Benchmark
+
+**Model portfolio positioning note, October 2026** · Huwa Jia Wei · Data as at {{ r.as_of }} · Benchmark: SGS 2Y–30Y, duration-weighted (equal rate risk per tenor)
+
+> **Positioning in one line:** a modest duration underweight (**{{ "%+.2f"|format(A.duration) }} yrs**), taken mainly in the 2Y and 15Y key rates. The SGS 5Y belly is overweight against short 20Y–30Y, and a **{{ "%.0f"|format(P.credit_weight*100) }}%** SGD investment-grade credit sleeve is funded mainly out of 2Y SGS. Yield pick-up is **{{ "%+.0f"|format(A.ytm_pct*100) }} bp**. Ex-ante tracking error is **{{ "%.0f"|format(r.te.te_bp) }} bp** against a 100 bp budget.
+
+## Market view
+
+**SGS trade well through Treasuries, but the long end still carries global beta.** The Fed hiked 25 bp to 3.75–4.00% on 16 September, its first hike since 2023, and the dots point to one more this year. It held on 28 October (10–2 vote), with a December hike priced. The 10Y UST closed at {{ "%.2f"|format(cv.ust10y) }}% on 30 October[^1], which puts the 10Y SGS {{ "%.0f"|format(-cv.sgs_ust_10y) }} bp below Treasuries. SGS do follow UST, at lower beta: in October the 10Y SGS fell {{ "%.0f"|format(-r.oct_move.sgs10_bp) }} bp ({{ "%.2f"|format(r.oct_move.sgs10_prev) }}% to {{ "%.2f"|format(cv.yields[10]) }}%) as UST fell {{ "%.0f"|format(-r.oct_move.ust10_bp) }} bp, a beta of about {{ "%.2f"|format(r.oct_move.beta) }}. The level gap is mostly explained by policy. MAS raised the S\$NEER slope slightly in April and very slightly in July, then held on 14 October; the slope is estimated at about 1.25% a year. Under uncovered interest parity, expected S\$ appreciation holds SGD rates below USD; covered interest parity then shows up as negative USD/SGD forward points. The slope alone does not explain the full front-end gap: 6M SGS sit {{ "%.0f"|format(r.front_gap_bp[0]) }}–{{ "%.0f"|format(r.front_gap_bp[1]) }} bp below the Fed funds range, against a ~1.25% expected appreciation. The remainder reflects an S\$ risk premium, the USD/SGD FX-swap basis, and structural demand for SGS from banks' liquid-asset requirements. Our view is that the policy band keeps the front end anchored but cannot protect the long end.
+
+**The curve offers almost no term premium.** 2s10s is {{ "%+.0f"|format(cv.s2s10) }} bp and 10s30s is {{ "%+.0f"|format(cv.s10s30) }} bp. The 15Y (2.29%) yields more than the 20Y (2.25%), and 6M (1.91%) yields more than 2Y (1.87%). Holding the long end therefore pays nothing extra for duration risk, while a sell-off in global term premium would flow into it. The 2Y–5Y segment, at {{ "%+.0f"|format(cv.yields[5]*100 - cv.yields[2]*100) }} bp over three years, is the steepest part of the curve per unit of duration and gives the best roll-down.
+
+**Credit is where the carry is.** With a flat government curve, extending duration earns very little, so spread is the main source of carry. SGD supply was muted in September (S\$2.3bn against S\$5.6bn in August), which OCBC notes supported spreads. OCBC's October credit view (data to 30 September) describes recent weakness as concentrated in lower-quality high yield rather than in IG[^2]. HDB priced a 4Y green bond at {{ "%.3f"|format(r.hdb_comparable.yield_pct) }}% in September, {{ r.hdb_comparable.implied_spread_bp[0] }}–{{ r.hdb_comparable.implied_spread_bp[1] }} bp over SGS depending on the day; statutory-board spreads here are set at {{ r.spread_sensitivity[1].hdb_bp }}/{{ r.spread_sensitivity[1].sb10_bp }} bp (4.6Y/10Y). At the prior {{ r.spread_sensitivity[0].hdb_bp }}/{{ r.spread_sensitivity[0].sb10_bp }} bp the pick-up would be {{ "%+.0f"|format(r.spread_sensitivity[0].pickup_bp) }} bp, and at the top of the range {{ "%+.0f"|format(r.spread_sensitivity[2].pickup_bp) }} bp.
+
+## Positioning and rationale
+
+| Position | Size | Conviction | Rationale |
+|------|--------|---|---------------|
+| Duration underweight | {{ "%+.2f"|format(A.duration) }} yrs, {{ "%+.1f"|format(A.dv01_sgd/1e3) }} S\$k/bp | Medium | A hedge for the long-end view, not a call on direction. With the Fed still hiking, a rise in global term premium would hit the SGS long end. Duration P&L is roughly symmetric ({{ "%+.0f"|format(sc.Bull.active_bp.duration) }} bp bull, {{ "%+.0f"|format(sc.Bear.active_bp.duration) }} bp bear), so it is kept small |
+| Curve: long 5Y, short 20Y–30Y | 5Y KRD {{ "%+.2f"|format(k.active[1]) }}; 20Y+30Y {{ "%+.2f"|format(k.active[4]+k.active[5]) }} | High | Captures 2s5s slope and roll-down; avoids an uncompensated long end (10s30s {{ "%+.0f"|format(cv.s10s30) }} bp) that is exposed to UST term premium |
+| SGD IG credit overweight | {{ "%.0f"|format(P.credit_weight*100) }}% MV, spread duration {{ "%.2f"|format(P.spread_duration) }} yrs, avg {{ "%.0f"|format(P.avg_spread_bp/P.credit_weight) }} bp | Medium | Carry in a flat curve. Kept at 4.5–10Y and mostly AA-/AAA: statutory boards {{ "%.2f"|format(r.sector_sd["Statutory board"]) }}, banks {{ "%.2f"|format(r.sector_sd["Bank senior"]) }}, corporates/REIT {{ "%.2f"|format(r.sector_sd["Corporate/REIT"]) }} yrs of spread duration |
+
+The credit sleeve is mostly funded from the 2Y SGS, which yields below 6M bills and contributes little carry. The 2Y underweight ({{ "%+.2f"|format(k.active[0]) }} KRD) is a funding leg, not a rates view.
+
+## Risk vs benchmark
+
+{{ t.risk }}
+
+![](figures/positioning.png)
+
+Rates and spread contribute about equally to the risk budget: {{ "%.0f"|format(r.te.rates_only_bp) }} bp of TE from rates alone and {{ "%.0f"|format(r.te.spread_only_bp) }} bp from spread alone, including {{ "%.0f"|format(r.te.idio_bp) }} bp of issuer-specific risk. {% if r.te.cross_term_bp2 > 0 %}The rates/spread cross-term adds risk rather than diversifying it: with spreads assumed to widen when SGS rally, the short duration and long credit both lose in risk-off, so total TE ({{ "%.0f"|format(r.te.te_bp) }} bp) exceeds the {{ "%.0f"|format(r.te.uncorrelated_bp) }} bp it would be if the two were uncorrelated.{% else %}The rates/spread cross-term diversifies: total TE ({{ "%.0f"|format(r.te.te_bp) }} bp) is below the {{ "%.0f"|format(r.te.uncorrelated_bp) }} bp it would be if the two were uncorrelated.{% endif %} Over the 6-month horizon used throughout, TE is {{ "%.0f"|format(r.te.te_6m_bp) }} bp, and the yield pick-up is lost if spreads widen by about **{{ "%.0f"|format(r.breakeven_6m_bp) }} bp**; that is our credit break-even.
+
+## Six-month scenarios
+
+{{ t.scenarios }}
+
+Active return breakdown, bp: carry/roll **{{ "%+.0f"|format(sc.Base.active_bp.carry + sc.Base.active_bp.roll) }}** in every scenario. Curve contributes **{{ "%+.0f"|format(sc.Base.active_bp.curve) }}** in the base case and **{{ "%+.0f"|format(sc.Bear.active_bp.curve) }}** in the bear case. Spread contributes **{{ "%+.0f"|format(sc["Credit stress"].active_bp.spread) }}** in credit stress. The portfolio is built to outperform in base and bear. It also stays ahead in a bull rally ({{ "%+.0f"|format(sc.Bull.active_bp.total) }} bp), because spread tightening offsets the duration underweight. **Credit stress is the main risk: {{ "%+.0f"|format(sc["Credit stress"].active_bp.total) }} bp** over six months, about {{ "%.1f"|format(-sc["Credit stress"].active_bp.total / r.te.te_6m_bp) }}× six-month TE ({{ "%.0f"|format(r.te.te_6m_bp) }} bp). We keep the size because {{ "%.0f"|format(r.high_grade_share*100) }}% of the sleeve is AAA or AA-, and run a hard stop instead: corporate/REIT lines, which drive most of the stress loss, are cut if SGD IG spreads widen {{ r.levels.credit.stop_widening_bp }} bp.
+
+## Trade levels
+
+{{ t.levels }}
+
+The steepener's legs are DV01-matched, so its P&L is curve shape, not direction; the net duration underweight sits in the 2Y and 15Y key rates. Curve target is the base-case move; the stop is set for 2:1 reward/risk.
+
+## Outlook and what would change our mind
+
+- **Cover the duration underweight** if the 10Y UST closes below 4.5% or the Fed signals a stop, since the spillover thesis then fades.
+- **Add to the 5s30s steepener** if MAS steepens the slope at its January 2027 review. A stronger S\$NEER would anchor the front end further.
+- **Cut corporate/REIT credit first (hard stop)** if SGD IG spreads widen by more than 25 bp, or if spread widening extends beyond weaker high yield into BB and IG (OCBC's own caution trigger). Statutory boards stay as liquid reserves.
+
+[^1]: UST 10Y: FRED DGS10 close, 30 Oct 2026. MAS decisions: MAS past monetary policy decisions table; MAS does not publish the slope, so ~1.25% is a market estimate (UOB). Fed decisions: FOMC statements, 16 Sep and 28 Oct 2026. SGS yields: MAS benchmark closing yields (average buying rates of government securities dealers), 30 Oct 2026.
+[^2]: OCBC Monthly Credit View, 6 Oct 2026. There is no public SGD IG spread curve as at 30 Oct 2026. Statutory-board spreads are calibrated to HDB's September 4Y print (OCBC; SGS from MAS); bank, GLC and REIT spreads are **illustrative** assumptions. HDB 3.46% 21-May-2031 coupon and maturity are from HDB's May-2024 pricing release. SGS 10Y on 30 Sep: MAS; UST 10Y on 30 Sep: FRED. These are model-portfolio analytics, not investment advice.

@@ -1,0 +1,8 @@
+item,value,unit,source,as_of
+ust_10y_yield,4.94,pct,FRED series DGS10 (US Treasury 10Y constant maturity),2026-10-30
+fed_funds_target_low,3.75,pct,Federal Reserve FOMC statement (hike 16 Sep 2026; unchanged 28 Oct 2026),2026-10-28
+fed_funds_target_high,4.00,pct,Federal Reserve FOMC statement (hike 16 Sep 2026; unchanged 28 Oct 2026),2026-10-28
+sgd_neer_slope_est,1.25,pct p.a.,Market estimate (UOB); MAS does not publish the slope,2026-10-14
+ust_10y_yield_prev_month_end,5.29,pct,FRED series DGS10 (US Treasury 10Y constant maturity),2026-09-30
+sgs_10y_yield_prev_month_end,2.47,pct,MAS SGS Prices and Yields - benchmark issues (average buying rates of govt securities dealers),2026-09-30
+hdb_4y_green_new_issue_yield,2.586,pct,"OCBC Monthly Credit View, 6 Oct 2026: Key SGD issues in September 2026 (HDB S$1.2bn 4Y green, fixed)",2026-09

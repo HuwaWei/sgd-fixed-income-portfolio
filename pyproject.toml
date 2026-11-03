@@ -1,0 +1,12 @@
+[project]
+name = "sgdfi"
+version = "1.0.0"
+description = "SGD Fixed Income Model Portfolio vs Benchmark: key-rate risk, tracking error and scenario attribution"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Huwa Jia Wei" }]
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

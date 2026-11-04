@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
+from . import history as hist
 from . import market as m
 from .portfolio import build_benchmark, build_curve, build_model, tracking_error
 from .scenarios import SCENARIOS, scenario_table
@@ -72,7 +73,7 @@ def compute() -> dict:
         sens.append({"label": lab, "hdb_bp": hdb_s, "sb10_bp": sb_s, "pickup_bp": (q.ytm(c) - b.ytm(c)) * 1e4,
                      "base_bp": rows["Base"], "stress_bp": rows["Credit stress"]})
 
-    return {
+    out = {
         "as_of": m.AS_OF, "aum_sgd": m.AUM_SGD, "macro": m.MACRO, "levels": levels, "spread_sensitivity": sens,
         "hdb_comparable": {"yield_pct": m.HDB_4Y_PRINT, "implied_spread_bp": list(m.HDB_4Y_IMPLIED_SPREAD_BP)},
         "breakeven_6m_bp": (sp["ytm_pct"] - sb["ytm_pct"]) * 100 * m.HORIZON_YEARS / sp["spread_duration"],
@@ -94,6 +95,8 @@ def compute() -> dict:
         "holdings": holdings, "scenarios": scen,
         "bench_weights": {bo.name: w for bo, w in b.holdings},
     }
+    out["history"] = hist.compute(out)
+    return out
 
 
 # ---------------- formatting ----------------
@@ -170,11 +173,88 @@ def levels_table(r) -> str:
     ])
 
 
+def history_table(r) -> str:
+    H, L = r["history"], r["history"]["levels"]
+    lv = {"Duration underweight": f"SGS 10Y {L['sgs10y_pct']['now']:.2f}% vs {L['sgs10y_pct']['mean']:.2f}% "
+                                  f"± {L['sgs10y_pct']['sd']:.2f}; z {L['sgs10y_pct']['z']:+.2f}",
+          "5s30s steepener": f"5s30s {L['s5s30_bp']['now']:+.0f} vs {L['s5s30_bp']['mean']:+.0f} "
+                             f"± {L['s5s30_bp']['sd']:.0f} bp; z {L['s5s30_bp']['z']:+.2f}",
+          "Rates book (credit as SGS)": "All active rates exposures together"}
+    like = {"Duration underweight": "10Y ≤ today", "5s30s steepener": "5s30s ≤ today",
+            "Rates book (credit as SGS)": "10Y ≤ today"}
+    out = ["| Position | Today vs 3Y mean ± sd | 6M hit rate | Avg active, bp | Worst 6M / max drawdown, bp "
+           "| Starts like today: hit / avg | History |",
+           "|---|---|---:|---:|---:|---:|---|"]
+    for name, t in H["tests"].items():
+        lt = t["like_today"]
+        out.append(f"| {name} | {lv[name]} | {t['hit_rate']*100:.0f}% | {t['mean_bp']:+.1f} | "
+                   f"{t['worst_bp']:+.0f} / {t['max_dd_bp']:+.0f} | {like[name]}: {lt['hit_rate']*100:.0f}% / "
+                   f"{lt['mean_bp']:+.1f} | {t['verdict']} |")
+    out.append("| SGD IG credit overweight | No public SGD IG spread history | – | – | – | – | Not testable |")
+    return "\n".join(out)
+
+
+def history_table_short(r) -> str:
+    """Compact version for the 2-page PDF (credit row is covered in the text)."""
+    H, L = r["history"], r["history"]["levels"]
+    lv = {"Duration underweight": f"10Y {L['sgs10y_pct']['now']:.2f}% vs {L['sgs10y_pct']['mean']:.2f} ± "
+                                  f"{L['sgs10y_pct']['sd']:.2f}% (z {L['sgs10y_pct']['z']:+.2f})",
+          "5s30s steepener": f"5s30s {L['s5s30_bp']['now']:+.0f} vs {L['s5s30_bp']['mean']:+.0f} ± "
+                             f"{L['s5s30_bp']['sd']:.0f} bp (z {L['s5s30_bp']['z']:+.2f})",
+          "Rates book (credit as SGS)": "All rates exposures together"}
+    out = ["| 6M holding, active bp | Today vs 3Y mean ± sd | Hit rate | Avg | Worst 6M | Max DD "
+           "| Starts like today: hit / avg | History |",
+           "|------------|-------------------------|-----:|----:|-----:|----:|--------:|--------|"]
+    for name, t in H["tests"].items():
+        lt = t["like_today"]
+        out.append(f"| {name.replace(' (credit as SGS)', '')} | {lv[name]} | {t['hit_rate']*100:.0f}% | "
+                   f"{t['mean_bp']:+.1f} | {t['worst_bp']:+.0f} | {t['max_dd_bp']:+.0f} | "
+                   f"{lt['hit_rate']*100:.0f}% / {lt['mean_bp']:+.1f} | {t['verdict']} |")
+    return "\n".join(out)
+
+
+def history_figure(r, path: Path) -> None:
+    import datetime as dt
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    H = r["history"]; S = H["series"]
+    d = [dt.date.fromisoformat(x) for x in S["dates"]]
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(9, 1.75), dpi=200)
+    for k, lab, col in [("y2", "2Y", "#7fa7d0"), ("y10", "10Y", "#1f4e79"), ("y30", "30Y", "#e07b39")]:
+        ax1.plot(d, S[k], lw=1.0, color=col, label=lab)
+    ax1.set_title("SGS benchmark yields, 3Y daily (%)", fontsize=8.5)
+    ax1.legend(fontsize=6.5, frameon=False, loc="upper right", ncol=3)
+    L = H["levels"]["s5s30_bp"]
+    ax2.plot(d, S["s5s30"], lw=1.0, color="#1f4e79")
+    ax2.axhline(L["mean"], color="grey", lw=0.8)
+    ax2.axhspan(L["mean"] - L["sd"], L["mean"] + L["sd"], color="grey", alpha=0.15, lw=0)
+    ax2.plot(d[-1], L["now"], "o", color="#c62828", ms=4)
+    ax2.set_title(f"5s30s (bp), 3Y mean ± 1 sd: today {L['now']:+.0f}, z {L['z']:+.2f}", fontsize=8.5)
+    short = {"Duration underweight": "Duration UW", "5s30s steepener": "Steepener",
+             "Rates book (credit as SGS)": "Rates book"}
+    cols = {"Duration underweight": "#c62828", "5s30s steepener": "#2e7d32", "Rates book (credit as SGS)": "#555555"}
+    for name, t in H["tests"].items():
+        ax3.plot([dt.date.fromisoformat(x) for x in t["starts"]], t["returns_bp"], lw=0.9, color=cols[name],
+                 label=f"{short[name]} (hit {t['hit_rate']*100:.0f}%)")
+    ax3.axhline(0, color="black", lw=0.6)
+    ax3.set_title("Active return over next 6M, by start date (bp)", fontsize=8.5)
+    ax3.set_ylim(min(min(t["returns_bp"]) for t in H["tests"].values()) - 5,
+                 max(max(t["returns_bp"]) for t in H["tests"].values()) + 45)
+    ax3.legend(fontsize=6, frameon=False, loc="upper left", ncol=2, columnspacing=0.8, handlelength=1.2)
+    for ax in (ax1, ax2, ax3):
+        ax.tick_params(labelsize=6.5); ax.grid(alpha=0.3)
+        ax.xaxis.set_major_locator(matplotlib.dates.YearLocator())
+        ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%Y"))
+    fig.tight_layout(); path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path); plt.close(fig)
+
+
 def figure(r, path: Path) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9, 2.7), dpi=200)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9, 2.2), dpi=200)
     y = r["curve"]["yields"]
     ax1.plot(list(y), list(y.values()), marker="o", color="#1f4e79", lw=1.6)
     ax1.set_xscale("log"); ax1.set_xticks(list(y)); ax1.set_xticklabels(["6M", "1Y", "2Y", "5Y", "10Y", "15Y", "20Y", "30Y", "50Y"], fontsize=7)
@@ -191,15 +271,23 @@ def figure(r, path: Path) -> None:
 def render(r) -> dict:
     sc_summary, sc_attr = scenario_tables(r)
     tables = {"risk": risk_table(r), "krd": krd_table(r), "holdings": holdings_table(r),
-              "scenarios": sc_summary, "attribution": sc_attr, "levels": levels_table(r)}
+              "scenarios": sc_summary, "attribution": sc_attr, "levels": levels_table(r),
+              "history": history_table(r), "history_short": history_table_short(r)}
     out = ROOT / "output"; out.mkdir(exist_ok=True)
     for k, v in tables.items():
-        (out / f"{k}.md").write_text(v + "\n")
-    (out / "results.json").write_text(json.dumps(r, indent=2, default=float))
+        if k != "history_short":  # PDF-only variant of history.md
+            (out / f"{k}.md").write_text(v + "\n")
+    # results.json keeps the history summary, not the daily series or per-window returns (those feed the chart)
+    slim = dict(r, history={k: v for k, v in r["history"].items() if k != "series"})
+    slim["history"]["tests"] = {n: {k: v for k, v in t.items() if k not in ("starts", "returns_bp")}
+                                for n, t in r["history"]["tests"].items()}
+    (out / "results.json").write_text(json.dumps(slim, indent=2, default=float))
     figure(r, ROOT / "report" / "figures" / "positioning.png")
+    history_figure(r, ROOT / "report" / "figures" / "history.png")
 
     env = Environment(loader=FileSystemLoader(ROOT / "report" / "templates"), undefined=StrictUndefined,
                       keep_trailing_newline=True)
+    env.filters["mon"] = lambda iso: __import__("datetime").date.fromisoformat(iso).strftime("%b %Y")
     ctx = {"r": r, "t": tables, "sc": {s["name"]: s for s in r["scenarios"]}}
     for tpl, target in TEMPLATES.items():
         (ROOT / target).write_text(env.get_template(tpl).render(**ctx))

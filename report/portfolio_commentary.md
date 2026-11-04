@@ -16,8 +16,8 @@
 
 | Position | Size | Conviction | Rationale |
 |------|--------|---|---------------|
-| Duration underweight | -0.35 yrs, -17.4 S\$k/bp | Medium | A hedge for the long-end view, not a call on direction. With the Fed still hiking, a rise in global term premium would hit the SGS long end. Duration P&L is roughly symmetric (-14 bp bull, +18 bp bear), so it is kept small |
-| Curve: long 5Y, short 20Y–30Y | 5Y KRD +0.84; 20Y+30Y -0.85 | High | Captures 2s5s slope and roll-down; avoids an uncompensated long end (10s30s +3 bp) that is exposed to UST term premium |
+| Duration underweight | -0.35 yrs, -17.4 S\$k/bp | Low (was Medium) | A hedge for the long-end view, not a source of return. With the Fed still hiking, a rise in global term premium would hit the SGS long end. Duration P&L is roughly symmetric (-14 bp bull, +18 bp bear), so it is kept small. History does not support it as a return source |
+| Curve: long 5Y, short 20Y–30Y | 5Y KRD +0.84; 20Y+30Y -0.85 | Medium (was High) | Captures 2s5s slope and roll-down; avoids a long end (10s30s +3 bp) exposed to UST term premium. 5s30s is at its 3-year mean, not stretched |
 | SGD IG credit overweight | 33% MV, spread duration 1.79 yrs, avg 69 bp | Medium | Carry in a flat curve. Kept at 4.5–10Y and mostly AA-/AAA: statutory boards 0.60, banks 0.47, corporates/REIT 0.73 yrs of spread duration |
 
 The credit sleeve is mostly funded from the 2Y SGS, which yields below 6M bills and contributes little carry. The 2Y underweight (-0.22 KRD) is a funding leg, not a rates view.
@@ -60,6 +60,18 @@ Active return breakdown, bp: carry/roll **+14** in every scenario. Curve contrib
 
 The steepener's legs are DV01-matched, so its P&L is curve shape, not direction; the net duration underweight sits in the 2Y and 15Y key rates. Curve target is the base-case move; the stop is set for 2:1 reward/risk.
 
+## Does history support the positioning?
+
+| 6M holding, active bp | Today vs 3Y mean ± sd | Hit rate | Avg | Worst 6M | Max DD | Starts like today: hit / avg | History |
+|------------|-------------------------|-----:|----:|-----:|----:|--------:|--------|
+| Duration underweight | 10Y 2.24% vs 2.53 ± 0.45% (z -0.66) | 42% | -5.5 | -35 | -35 | 72% / +3.9 | Weakens |
+| 5s30s steepener | 5s30s +24 vs +24 ± 23 bp (z -0.01) | 52% | +2.6 | -29 | -32 | 65% / +5.9 | Mild support |
+| Rates book | All rates exposures together | 42% | -2.4 | -46 | -49 | 61% / +4.1 | Weakens |
+
+![](figures/history.png)
+
+**Only partly.**[^3] *Duration:* history weakens the call. SGS rallied through most of the window, so a similar underweight lost 5.5 bp per six months on average; it paid only from yields as low as today's, all in one episode (Jun 2025–Apr 2026). We keep it as a small hedge, with conviction cut to Low. *Curve:* mild support. 5s30s sits at its 3-year mean and is flat only against the past year (+44 bp). The +20 bp target was reached in 28% of windows and the stop in 25%, so conviction is cut to Medium. *Rates book:* no edge on its own (-2.4 bp), so the excess return relies on credit carry, which public data cannot test. Realised rate vols (52–63 bp) are at or below the TE assumptions. Position sizes are unchanged.
+
 ## Outlook and what would change our mind
 
 - **Cover the duration underweight** if the 10Y UST closes below 4.5% or the Fed signals a stop, since the spillover thesis then fades.
@@ -68,3 +80,4 @@ The steepener's legs are DV01-matched, so its P&L is curve shape, not direction;
 
 [^1]: UST 10Y: FRED DGS10 close, 30 Oct 2026. MAS decisions: MAS past monetary policy decisions table; MAS does not publish the slope, so ~1.25% is a market estimate (UOB). Fed decisions: FOMC statements, 16 Sep and 28 Oct 2026. SGS yields: MAS benchmark closing yields (average buying rates of government securities dealers), 30 Oct 2026.
 [^2]: OCBC Monthly Credit View, 6 Oct 2026. There is no public SGD IG spread curve as at 30 Oct 2026. Statutory-board spreads are calibrated to HDB's September 4Y print (OCBC; SGS from MAS); bank, GLC and REIT spreads are **illustrative** assumptions. HDB 3.46% 21-May-2031 coupon and maturity are from HDB's May-2024 pricing release. SGS 10Y on 30 Sep: MAS; UST 10Y on 30 Sep: FRED. These are model-portfolio analytics, not investment advice.
+[^3]: MAS, SGS Prices and Yields – benchmark issues, daily, 2023-10-30 to 2026-10-30 (746 days; days with a missing tenor dropped). Positions are rebuilt daily at today's sizing, held 6M and revalued in full, with carry; the rates book treats credit lines as same-maturity SGS. Windows overlap (about five independent 6M periods), so results are indicative. "Like today": 10Y (or 5s30s) at or below today's level.

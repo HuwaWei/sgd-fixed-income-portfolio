@@ -10,13 +10,33 @@
 - **SGD IG credit overweight, 33% of market value** (spread duration 1.79 yrs), mostly AAA statutory boards and AA- bank seniors at 4.5–10Y: with a flat curve, spread is the main source of carry. Statutory-board spreads are calibrated to HDB's September 4Y print; hard stop on +25 bp SGD IG widening.
 - **+24 bp yield pick-up for 77 bp ex-ante tracking error** against a 100 bp budget (54 bp over 6M); over six months the pick-up absorbs about 7 bp of spread widening.
 - **Six-month active return:** base **+32 bp**, bear **+23 bp**, bull **+12 bp**, credit stress **-104 bp**. Credit stress is the main risk, and corporate/REIT lines are cut first.
+- **History check (3 years of daily MAS yields): only partial support.** A similar duration underweight lost 5.5 bp per 6M on average (42% hit rate), so history weakens that call. The steepener earned +2.6 bp (52% hit rate) from a 5s30s that sits at its 3-year mean (z -0.01). Credit cannot be tested on public data. Conviction is cut to Low (duration) and Medium (curve); position sizes are unchanged.
 
 ## Report
 
 - **[Model portfolio positioning note, October 2026 (PDF, 2 pages)](report/portfolio_commentary.pdf)** · [Markdown version](report/portfolio_commentary.md)
-- Full tables: [trade levels](output/levels.md) · [risk vs benchmark](output/risk.md) · [key-rate durations](output/krd.md) · [holdings](output/holdings.md) · [scenarios](output/scenarios.md) · [return attribution](output/attribution.md) · [all results (JSON)](output/results.json)
+- Full tables: [trade levels](output/levels.md) · [risk vs benchmark](output/risk.md) · [key-rate durations](output/krd.md) · [holdings](output/holdings.md) · [scenarios](output/scenarios.md) · [return attribution](output/attribution.md) · [history test](output/history.md) · [all results (JSON)](output/results.json)
 
 ![SGS par curve and active key-rate DV01 vs benchmark](report/figures/positioning.png)
+
+## Does history support the positioning?
+
+The test uses three years of daily MAS benchmark yields (2023-10-30 to 2026-10-30; 746 days; days with a missing tenor are dropped). Each position is rebuilt on every start day from that day's curve, using today's sizing. It is held for six months, then revalued in full on the curve at the end date. Returns are active, in bp of fund value, and include carry and roll-down; maximum drawdown uses weekly marks. The 624 daily start dates give overlapping windows, which amount to about five independent six-month periods, so the hit rates are indicative only.
+
+![SGS yields, 5s30s against its 3-year range, and rolling 6M active returns of the positions](report/figures/history.png)
+
+| Position | Today vs 3Y mean ± sd | 6M hit rate | Avg active, bp | Worst 6M / max drawdown, bp | Starts like today: hit / avg | History |
+|---|---|---:|---:|---:|---:|---|
+| Duration underweight | SGS 10Y 2.24% vs 2.53% ± 0.45; z -0.66 | 42% | -5.5 | -35 / -35 | 10Y ≤ today: 72% / +3.9 | Weakens |
+| 5s30s steepener | 5s30s +24 vs +24 ± 23 bp; z -0.01 | 52% | +2.6 | -29 / -32 | 5s30s ≤ today: 65% / +5.9 | Mild support |
+| Rates book (credit as SGS) | All active rates exposures together | 42% | -2.4 | -46 / -49 | 10Y ≤ today: 61% / +4.1 | Weakens |
+| SGD IG credit overweight | No public SGD IG spread history | – | – | – | – | Not testable |
+
+- **Duration underweight: history weakens it.** The SGS 10Y at 2.24% is 0.66 sd below its 3-year mean (lower than on 67% of days) and close to its 12-month average of 2.18%. Over the window a -0.35 yr underweight lost 5.5 bp per six months on average and was right 42% of the time, because the 10Y fell from a 3.45% high to a 1.75% low. The underweight did pay when the 10Y started at or below today's level (72% hit rate, +3.9 bp average), but all of those starts fall in one episode (Jun 2025–Apr 2026), ahead of the 2026 sell-off. The underweight is therefore no longer presented as a source of return. It stays as a small hedge for the long-end view, with conviction cut from Medium to Low; the size is unchanged pending review.
+- **5s30s steepener: mild support.** At +24 bp, 5s30s is at its 3-year mean (z -0.01). That makes it flat only against the 12-month average of +44 bp, not against the full three years. A similar steepener earned +2.6 bp per six months on average with a 52% hit rate. Started from a slope at or below today's, it had a 65% hit rate and averaged +5.9 bp, but all such starts fall in Oct 2023–Mar 2025, before and during the 2025 steepening. The +20 bp target move happened in 28% of six-month windows, and a 10 bp flattening to the stop in 25%. That is not a high-conviction setup, so conviction is cut from High to Medium. 10s30s at +3 bp is also in line with its 3-year mean (+4 bp): an unrewarded long end has been the norm over the period, not an anomaly.
+- **Rates book as a whole: no historical edge.** Taking every rates exposure in the portfolio together (with credit lines treated as SGS of the same maturity), the book averaged -2.4 bp per six months, with a 42% hit rate and a worst window of -46 bp. On this evidence, the portfolio's excess return has to come from credit carry.
+- **Credit is not testable.** MAS publishes no SGD credit spreads and there is no free daily SGD IG spread history, so the credit overweight still rests on the HDB comparable and the stated assumptions.
+- **The risk model is, if anything, conservative.** Realised annualised volatility of daily yield changes was 52–63 bp by tenor, against assumed vols of 55–72 bp. At the long end the assumption is above realised (30Y: 55 bp realised vs 72 bp assumed), so ex-ante TE is not understated.
 
 ## Method
 
@@ -71,7 +91,8 @@ Active return is $R^A=\sum_i w^P_iR_i-\sum_j w^B_jR_j$.
 | HDB 4Y green new issue | 2.586% (35–69 bp over SGS 4Y across September) | [OCBC Monthly Credit View, October 2026](https://www.ocbc.com/iwov-resources/sg/ocbc/gbc/pdf/Credit%20Research/Monthly%20Reports/2026/OCBC%20Asia%20Credit%20Monthly%20Credit%20View%20-%20Public%20(October%202026).pdf), "Key SGD issues in September 2026"; SGS from MAS | Sep 2026 |
 | Statutory-board spreads | 40 bp (HDB 4.6Y), 47 bp (10Y) | Calibrated to the HDB 4Y print above | 30 Oct 2026 |
 | Bank, GLC and REIT spreads | 55–125 bp by line | Illustrative assumption (see Limitations) | 30 Oct 2026 |
-| Factor vols and correlations | See `src/sgdfi/market.py` | Assumption, not fitted to history | – |
+| SGS benchmark yield history, 6M–50Y, daily | [data/sgs_benchmark_yields_history.csv](data/sgs_benchmark_yields_history.csv) (746 days) | [MAS, SGS Prices and Yields – benchmark issues](https://eservices.mas.gov.sg/statistics/fdanet/BenchmarkPricesAndYields.aspx), daily download (average buying rates of government securities dealers); fetched with `scripts/fetch_mas_history.py` | 2023-10-30 to 2026-10-30 |
+| Factor vols and correlations | See `src/sgdfi/market.py` | Assumption, not fitted to history (realised 3Y vols are compared in the history section) | – |
 
 **Assumptions.**
 
@@ -96,14 +117,14 @@ pip install -r requirements.txt
 make test analysis
 ```
 
-`make test` runs the unit tests. `make analysis` (equivalently `PYTHONPATH=src python -m sgdfi`) reads `data/`, rebuilds `output/*.md`, `output/results.json`, the figure, the commentary and this README. `make pdf` renders the 2-page PDF and additionally needs `pandoc` and Node with Playwright/Chromium; `make all` runs install, tests, analysis and PDF in one step.
+`make test` runs the unit tests. `make analysis` (equivalently `PYTHONPATH=src python -m sgdfi`) reads `data/`, rebuilds `output/*.md`, `output/results.json`, the figures, the commentary and this README. It needs no network: the yield history is committed in `data/`, and `python scripts/fetch_mas_history.py 2023-10-30 2026-10-30` re-downloads it from MAS. `make pdf` renders the 2-page PDF and additionally needs `pandoc` and Node with Playwright/Chromium; `make all` runs install, tests, analysis and PDF in one step.
 
 ## Limitations
 
-- **Single-date snapshot.** All analytics are as at 30 Oct 2026. Attribution is ex-ante (scenario-based), not a realised performance record.
+- **Single-date snapshot.** All positioning analytics are as at 30 Oct 2026. Attribution is ex-ante (scenario-based), and the history test is a simulated backtest; neither is a realised performance record.
 - **Credit spreads are mostly illustrative.** There is no public SGD IG spread curve for 30 Oct 2026. Statutory-board spreads rest on a single comparable (HDB's September 4Y print, whose implied spread ranged 35–69 bp as SGS moved); at the prior 18/25 bp the pick-up is +22 bp, and at the top of the range +27 bp. Bank, GLC and REIT spreads (55–125 bp) are assumptions, and those lines are generic proxies, not specific issues. There is no liquidity, bid/offer or new-issue concession modelling, and spreads are constant across tenor.
 - **S\$NEER slope.** MAS does not publish the slope; ~1.25% p.a. is a market estimate.
-- **No market history.** Tracking error and scenarios depend on assumed vols and judgmental shocks, not on an empirical covariance matrix or SGS/SORA history.
+- **Short market history.** The history test covers three years of SGS yields, which is essentially one rally followed by one sell-off; its overlapping six-month windows amount to about five independent observations. There is no SGD credit-spread or SORA history. Tracking error and scenarios still depend on assumed vols and judgmental shocks rather than an empirical covariance matrix.
 - **Benchmark is a model construct**, not a published index (e.g. FTSE/iBoxx). The duration weighting makes it front-end heavy by market value (about half in 2Y) and shorter than a market-value-weighted SGS index, so active positions are measured against equal risk per tenor.
 - **Simplified conventions.** Cash flows sit on an exact half-year grid with no day count or holiday calendar, and the 6M and 1Y T-bill yields are treated as semi-annual par yields.
 - There are no transaction costs, repo/funding, FX hedging or SORA/IRS overlays. In practice the curve trade could be run more efficiently in SGD IRS.

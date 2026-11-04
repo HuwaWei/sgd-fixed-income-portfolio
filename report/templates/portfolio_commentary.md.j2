@@ -1,4 +1,5 @@
 {%- set A = r.active -%}{%- set P = r.port -%}{%- set B = r.bench -%}{%- set k = r.krd -%}{%- set cv = r.curve -%}
+{%- set H = r.history -%}{%- set HL = H.levels -%}{%- set HD = H.tests["Duration underweight"] -%}{%- set HS = H.tests["5s30s steepener"] -%}{%- set HR = H.tests["Rates book (credit as SGS)"] -%}
 # SGD Fixed Income Model Portfolio vs Benchmark
 
 **Model portfolio positioning note, October 2026** · Huwa Jia Wei · Data as at {{ r.as_of }} · Benchmark: SGS 2Y–30Y, duration-weighted (equal rate risk per tenor)
@@ -17,8 +18,8 @@
 
 | Position | Size | Conviction | Rationale |
 |------|--------|---|---------------|
-| Duration underweight | {{ "%+.2f"|format(A.duration) }} yrs, {{ "%+.1f"|format(A.dv01_sgd/1e3) }} S\$k/bp | Medium | A hedge for the long-end view, not a call on direction. With the Fed still hiking, a rise in global term premium would hit the SGS long end. Duration P&L is roughly symmetric ({{ "%+.0f"|format(sc.Bull.active_bp.duration) }} bp bull, {{ "%+.0f"|format(sc.Bear.active_bp.duration) }} bp bear), so it is kept small |
-| Curve: long 5Y, short 20Y–30Y | 5Y KRD {{ "%+.2f"|format(k.active[1]) }}; 20Y+30Y {{ "%+.2f"|format(k.active[4]+k.active[5]) }} | High | Captures 2s5s slope and roll-down; avoids an uncompensated long end (10s30s {{ "%+.0f"|format(cv.s10s30) }} bp) that is exposed to UST term premium |
+| Duration underweight | {{ "%+.2f"|format(A.duration) }} yrs, {{ "%+.1f"|format(A.dv01_sgd/1e3) }} S\$k/bp | Low (was Medium) | A hedge for the long-end view, not a source of return. With the Fed still hiking, a rise in global term premium would hit the SGS long end. Duration P&L is roughly symmetric ({{ "%+.0f"|format(sc.Bull.active_bp.duration) }} bp bull, {{ "%+.0f"|format(sc.Bear.active_bp.duration) }} bp bear), so it is kept small. History does not support it as a return source |
+| Curve: long 5Y, short 20Y–30Y | 5Y KRD {{ "%+.2f"|format(k.active[1]) }}; 20Y+30Y {{ "%+.2f"|format(k.active[4]+k.active[5]) }} | Medium (was High) | Captures 2s5s slope and roll-down; avoids a long end (10s30s {{ "%+.0f"|format(cv.s10s30) }} bp) exposed to UST term premium. 5s30s is at its 3-year mean, not stretched |
 | SGD IG credit overweight | {{ "%.0f"|format(P.credit_weight*100) }}% MV, spread duration {{ "%.2f"|format(P.spread_duration) }} yrs, avg {{ "%.0f"|format(P.avg_spread_bp/P.credit_weight) }} bp | Medium | Carry in a flat curve. Kept at 4.5–10Y and mostly AA-/AAA: statutory boards {{ "%.2f"|format(r.sector_sd["Statutory board"]) }}, banks {{ "%.2f"|format(r.sector_sd["Bank senior"]) }}, corporates/REIT {{ "%.2f"|format(r.sector_sd["Corporate/REIT"]) }} yrs of spread duration |
 
 The credit sleeve is mostly funded from the 2Y SGS, which yields below 6M bills and contributes little carry. The 2Y underweight ({{ "%+.2f"|format(k.active[0]) }} KRD) is a funding leg, not a rates view.
@@ -43,6 +44,14 @@ Active return breakdown, bp: carry/roll **{{ "%+.0f"|format(sc.Base.active_bp.ca
 
 The steepener's legs are DV01-matched, so its P&L is curve shape, not direction; the net duration underweight sits in the 2Y and 15Y key rates. Curve target is the base-case move; the stop is set for 2:1 reward/risk.
 
+## Does history support the positioning?
+
+{{ t.history_short }}
+
+![](figures/history.png)
+
+**Only partly.**[^3] *Duration:* history weakens the call. SGS rallied through most of the window, so a similar underweight lost {{ "%.1f"|format(-HD.mean_bp) }} bp per six months on average; it paid only from yields as low as today's, all in one episode ({{ HD.like_today.first|mon }}–{{ HD.like_today.last|mon }}). We keep it as a small hedge, with conviction cut to Low. *Curve:* mild support. 5s30s sits at its 3-year mean and is flat only against the past year ({{ "%+.0f"|format(HL.s5s30_bp.mean_12m) }} bp). The {{ "%+.0f"|format(H.s5s30_6m_change.target_move_bp) }} bp target was reached in {{ "%.0f"|format(H.s5s30_6m_change.p_target*100) }}% of windows and the stop in {{ "%.0f"|format(H.s5s30_6m_change.p_stop*100) }}%, so conviction is cut to Medium. *Rates book:* no edge on its own ({{ "%+.1f"|format(HR.mean_bp) }} bp), so the excess return relies on credit carry, which public data cannot test. Realised rate vols ({{ "%.0f"|format(H.realised_vol_bp.values()|min) }}–{{ "%.0f"|format(H.realised_vol_bp.values()|max) }} bp) are at or below the TE assumptions. Position sizes are unchanged.
+
 ## Outlook and what would change our mind
 
 - **Cover the duration underweight** if the 10Y UST closes below 4.5% or the Fed signals a stop, since the spillover thesis then fades.
@@ -51,3 +60,4 @@ The steepener's legs are DV01-matched, so its P&L is curve shape, not direction;
 
 [^1]: UST 10Y: FRED DGS10 close, 30 Oct 2026. MAS decisions: MAS past monetary policy decisions table; MAS does not publish the slope, so ~1.25% is a market estimate (UOB). Fed decisions: FOMC statements, 16 Sep and 28 Oct 2026. SGS yields: MAS benchmark closing yields (average buying rates of government securities dealers), 30 Oct 2026.
 [^2]: OCBC Monthly Credit View, 6 Oct 2026. There is no public SGD IG spread curve as at 30 Oct 2026. Statutory-board spreads are calibrated to HDB's September 4Y print (OCBC; SGS from MAS); bank, GLC and REIT spreads are **illustrative** assumptions. HDB 3.46% 21-May-2031 coupon and maturity are from HDB's May-2024 pricing release. SGS 10Y on 30 Sep: MAS; UST 10Y on 30 Sep: FRED. These are model-portfolio analytics, not investment advice.
+[^3]: MAS, SGS Prices and Yields – benchmark issues, daily, {{ H.start }} to {{ H.end }} ({{ H.days }} days; days with a missing tenor dropped). Positions are rebuilt daily at today's sizing, held 6M and revalued in full, with carry; the rates book treats credit lines as same-maturity SGS. Windows overlap (about five independent 6M periods), so results are indicative. "Like today": 10Y (or 5s30s) at or below today's level.
